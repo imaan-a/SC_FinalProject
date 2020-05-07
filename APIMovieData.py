@@ -84,6 +84,29 @@ class MovieInfo:
 
         return out1, out2
 
+    def get_plot(self):
+        '''
+        Gets the plot of the initialized movie title.
+
+        **Parameters**
+            None
+
+        **Returns**
+            plot: **list, str**
+                The plot of the movie as a string.
+        '''
+        plot_url = "https://imdb8.p.rapidapi.com/title/get-plots"
+        plot_query = {"tconst": self.id}
+        response = requests.request("GET", plot_url, headers=self.imdbheaders,
+                                    params=plot_query)
+        dicty = json.loads(response.text)
+        if 'plots' in dicty:
+            plot = dicty['plots'][0]['text']
+        else: 
+            plot = 'No plot summary available'
+
+        return plot
+
     def get_pic_details(self):
         '''
         Gives link to initialized movie poster.

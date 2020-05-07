@@ -110,10 +110,12 @@ def click_info():
     pick_c = OptionMenu(out_frame, clicked, 'United States', 'Canada',
                         'United Kingdom', 'Spain', 'France', 'Brazil',
                         'Hong Kong', 'Japan')
-    pick_c.grid(row=15, column=9)
+    pick_c.grid(row=20, column=10)
     wat_but = Button(out_frame, text='Watch Now',
                      command=partial(click_watch, mov1, clicked))
-    wat_but.grid(row=17, column=9)
+    wat_but.grid(row=20, column=9)
+    plot_txt = mov1.get_plot()
+    p = Label(out_frame, text=plot_txt, wraplength=400).grid(row=15, column=9)
 
 
 def click_rec_info(recs, j):
@@ -142,10 +144,12 @@ def click_rec_info(recs, j):
     pick_c = OptionMenu(top_frame, clicked, 'United States', 'Canada',
                         'United Kingdom', 'Spain', 'France', 'Brazil',
                         'Hong Kong', 'Japan')
-    pick_c.grid(row=16, column=9)
+    pick_c.grid(row=21, column=10)
     wat_but = Button(top_frame, text='Watch Now',
                      command=partial(click_watch, mov2, clicked))
-    wat_but.grid(row=18, column=9)
+    wat_but.grid(row=21, column=9)
+    plot_txt = mov2.get_plot()
+    p = Label(top_frame, text=plot_txt, wraplength=400).grid(row=16, column=9)
 
 
 def click_rec():
@@ -174,7 +178,7 @@ root.title('Movie Database')
 in_frame = LabelFrame(root, padx=30, pady=50)
 in_frame.grid(row=4, column=10, columnspan=4)
 out_frame = LabelFrame(root, padx=115, pady=20)
-out_frame.grid(row=8, column=10, columnspan=4, rowspan=20)
+out_frame.grid(row=8, column=10, columnspan=4, rowspan=30)
 
 myLabel = Label(in_frame, text='Enter a Movie Title:')
 myLabel.grid(row=2, column=10)
