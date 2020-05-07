@@ -10,13 +10,24 @@ import requests
 import json
 
 class MovieInfo:
-
+    '''
+    This class is used to extract relevant data from the Imdb and Utelly APIs. 
+    The data can then be used with a graphical user interface to see it visually
+    '''
+    
     def __init__(self, movie):
-        
-        self.imdb_host = 'imdb8.p.rapidapi.com'
+        '''
+        Initializes the Movie Info function with a movie title and searches the 
+        title in the imdb API. 
+
+        **Parameters**
+            movie: **str**
+                Movie title or title fragment as given by user through the gui.
+        '''
         self.rapidapi_key = '2f253b2b1fmshf52ace529d3e4fdp100abfjsnc5a369008482'
-        self.movie = movie  
-        #assert len(self.movie) >= 2, 'Enter more characters to search' 
+        self.movie = movie
+        self.imdb_host = 'imdb8.p.rapidapi.com'
+        assert len(self.movie) >= 2, 'Enter more characters to search' 
         
         url = 'https://imdb8.p.rapidapi.com/title/find'
         querystring = {"q":self.movie}
@@ -36,14 +47,34 @@ class MovieInfo:
         
         
     def get_info(self):   
-        
+        '''
+        Extracts relevant information about initialized movie title from imdb.
+
+        **Parameters**
+            None
+
+        **Returns**
+            out1: **str**
+                Formatted string with movie title, year, runtime and director
+            out2: **list, str**
+                List of strings with title and 3 principle cast members
+        '''
         title = self.first_result['title']
         year = self.first_result['year']
         kind = self.first_result['titleType'].capitalize()
         cast1 = self.first_result['principals'][0]['name']
-        cast2 = self.first_result['principals'][1]['name']
-        cast3 = self.first_result['principals'][2]['name']
-        #add error handling (not three cast, no principles, etc)
+        
+        #error handling for if there are less than 3 cast members
+        try:
+            cast2 = self.first_result['principals'][1]['name']
+        except:
+            cast2 = ''
+
+        try:
+            cast3 = self.first_result['principals'][2]['name']
+        except:
+            cast3 = ''
+        
         run = self.first_result['runningTimeInMinutes']
         
         crewrl = "https://imdb8.p.rapidapi.com/title/get-top-crew"
@@ -59,23 +90,43 @@ class MovieInfo:
         return out1, out2
     
     def get_pic_details(self):
-        
+        '''
+        Gives link to initialized movie poster.
+
+        **Parameters**
+            None
+
+        **Returns**
+            pic_url: **str**
+                String of url that links to the movie poster. 
+        '''
         pic_url = self.first_result['image']['url']
         
         return pic_url
     
     def recommendations(self):
-        
+        '''
+        Gives recommendations for other movies based on the initialized title.
+        Uses an endpoint in the imdb API. 
+
+        **Parameters**
+            None
+
+        **Returns**
+            recs: **list, str**
+                List of titles similar to initialized movie.
+        '''
         r_url = "https://imdb8.p.rapidapi.com/title/get-more-like-this"
         r_query = {"currentCountry":"US","purchaseCountry":"US","tconst":self.id}
         dets_url = "https://imdb8.p.rapidapi.com/title/get-overview-details"
 
         recresponse = requests.request("GET", r_url, headers=self.imdbheaders, params=r_query)
         recdict = json.loads(recresponse.text)
+        
         if len(recdict) == 0:
             raise Exception ('No similar titles found')
         elif len(recdict) < 5:
-            rec_num = len(recdict)
+            rec_num = len(recdict) #if API gives less than 5 similar titles
         else: 
             rec_num = 5
         
@@ -93,7 +144,17 @@ class MovieInfo:
         return recs
     
     def wheretowatch(self, country):
-        
+        '''
+        Uses the Utelly API to show where the titles can be found online to 
+        watch in nine different countries.
+
+        **Parameters**
+            country: **str**
+                Country in which user wants to find streaming service.
+
+        **Returns**
+            None
+        '''
         utel_url = 'https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup'
         c_dict = {'United States':'us', 'Canada': 'ca', 'United Kingdom':'uk',
                   'Austrailia':'au', 'Spain':'es', 'France':'fr', 'Brazil':'br',
@@ -118,7 +179,5 @@ class MovieInfo:
         return services, links
         
 if __name__ == '__main__':
-    jw = MovieInfo('John Wick')
-    place = jw.wheretowatch('us')
-    print(place)
+    pass
     
