@@ -8,10 +8,32 @@ import webbrowser
 from functools import partial
 
 def set_movie_instance(movie):
+    '''
+    Creates instance of MovieInfo object. 
+
+    **Parameters**
+        movie: **str**
+            Movie title or title fragment.
+
+    **Returns**
+        None
+    '''
     mov1 = MovieInfo(movie)
     return mov1
 
 def add_pic(instance, frame):
+    '''
+    Adds movie poster to the given gui frame. 
+
+    **Parameters**
+        instance: **MovieInfo**
+            MovieInfo object containing movie data.
+        frame: **tkinter.Frame**
+            Frame that the picture will be place inside. 
+
+    **Returns**
+        None
+    '''
     pic_url = instance.get_pic_details()
     picrespon = requests.get(pic_url)
     img = Image.open(BytesIO(picrespon.content))
@@ -22,10 +44,34 @@ def add_pic(instance, frame):
     pic_lab.grid(row=8, column=8, rowspan=20)
 
 def urlopen(links, i):
+    '''
+    Opens a url in the default web browser. 
+
+    **Parameters**
+        links: **list, str**
+            List of urls from different services for the same title as strings.
+        i: **int**
+            Passes information on which link to open.
+
+    **Returns**
+        None
+    '''
     webbrowser.open_new(links[i])
     
 def click_watch(instance, clicked):
-    
+    '''
+    Puts list of where to watch the selected title on the interface for users
+    to select. 
+
+    **Parameters**
+        instance: **MovieInfo**
+            MovieInfo object that has data on the initialized title.
+        clicked: **tkinter variable**
+            Variable of the drop down menu to select country.
+
+    **Returns**
+        None
+    '''
     country = clicked.get()
     out_frame.grid_forget()
     where_frame = LabelFrame(root, padx=115, pady=20)
@@ -36,7 +82,17 @@ def click_watch(instance, clicked):
         Button(where_frame, text=value, command=partial(urlopen, links, i)).grid(row=13+i, column=9)
 
 def click_info():
+    '''
+    Puts information about the user-entered title onto the interface window.
+    Information consists of movie title, year, runtime, director and principal
+    cast members. 
 
+    **Parameters**
+        None
+
+    **Returns**
+        None
+    '''
     mov1 = set_movie_instance(e.get())
     add_pic(mov1, out_frame)
     txt1, txt2 = mov1.get_info() 
@@ -53,7 +109,17 @@ def click_info():
     wat_but.grid(row=17, column=9)
 
 def click_rec_info(recs, j):
-    
+    '''
+    Puts information about the recommended title that was selected onto the 
+    interface window. Information consists of movie title, year, runtime, 
+    director and principal cast members. 
+
+    **Parameters**
+        None
+
+    **Returns**
+        None
+    '''
     mov2 = set_movie_instance(recs[j+1])
     out_frame.grid_forget()
     top_frame = LabelFrame(root, padx=115, pady=20)
@@ -74,7 +140,16 @@ def click_rec_info(recs, j):
 
 
 def click_rec():
-    
+    '''
+    Puts a list of movies that are similar to the user-entered title onto the 
+    interface window.  Options for more information on each title given.
+
+    **Parameters**
+        None
+
+    **Returns**
+        None
+    '''
     mov1 = set_movie_instance(e.get())
     recs = mov1.recommendations()
     for i, value in enumerate(recs):
@@ -103,6 +178,7 @@ rec_but = Button(in_frame, text='Find Similar', command=click_rec, fg='blue')
 rec_but.grid(row=7, column=11)
 
 root.mainloop()
+
 
 
 
