@@ -2,10 +2,10 @@
 from tkinter import *
 import requests
 from PIL import ImageTk, Image
-from final_IA import MovieInfo
 from io import BytesIO
 import webbrowser
 from functools import partial
+from APIMovieData import MovieInfo
 
 
 def set_movie_instance(movie):
